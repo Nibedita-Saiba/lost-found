@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campus Lost & Found Portal</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo">LF</div>
+      <div>
+        <h1>Campus Lost & Found</h1>
+        <p>College Web Portal</p>
+      </div>
+    </div>
+
+    <nav class="nav-links">
+      <a href="#dashboard">Dashboard</a>
+      <a href="#report">Report Item</a>
+      <a href="#listings">Listings</a>
+      <a href="#admin">Admin Panel</a>
+    </nav>
+
+    <div class="top-actions">
+      <button id="themeToggle" class="outline-btn">Dark Mode</button>
+      <button id="exportBtn" class="primary-btn">Export Data</button>
+    </div>
+  </header>
+
+  <section class="hero-section">
+    <div class="hero-left">
+      <span class="hero-badge">Centralized Campus Recovery System</span>
+      <h2>Report, Track, Claim, and Return Items Across Campus</h2>
+      <p>
+        A polished web portal for students and administrators to manage lost and found items with search, claim verification, and approval workflow.
+      </p>
+      <div class="hero-buttons">
+        <a href="#report" class="primary-btn">Report Item</a>
+        <a href="#listings" class="outline-btn">Browse Listings</a>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="hero-card">
+        <h3>Quick Actions</h3>
+        <ul>
+          <li>Submit Lost or Found Item</li>
+          <li>Upload Image Preview</li>
+          <li>Search by Category or Location</li>
+          <li>Submit Ownership Claim</li>
+          <li>Admin Approve / Reject Claims</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <main class="main-grid">
+    <section class="dashboard-panel" id="dashboard">
+      <div class="section-title-row">
+        <h2>Dashboard Overview</h2>
+        <span class="muted-text">Webpage Version</span>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3 id="totalItems">0</h3>
+          <p>Total Items</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="lostCount">0</h3>
+          <p>Lost Reports</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="foundCount">0</h3>
+          <p>Found Reports</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="claimedCount">0</h3>
+          <p>Claimed</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="approvedCount">0</h3>
+          <p>Approved</p>
+        </div>
+        <div class="stat-card">
+          <h3 id="returnedCount">0</h3>
+          <p>Returned</p>
+        </div>
+      </div>
+
+      <div class="notice-box">
+        <h3>Recent Notifications</h3>
+        <ul id="notificationList">
+          <li>No recent updates.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="form-panel" id="report">
+      <div class="section-title-row">
+        <h2>Report an Item</h2>
+        <span class="muted-text">Student Form</span>
+      </div>
+
+      <form id="itemForm" class="item-form">
+        <input type="hidden" id="editItemId" />
+        <input type="hidden" id="existingStatus" />
+
+        <div class="form-row">
+          <div>
+            <label>Item Name</label>
+            <input type="text" id="itemName" required />
+          </div>
+          <div>
+            <label>Type</label>
+            <select id="itemType" required>
+              <option value="">Select</option>
+              <option value="Lost">Lost</option>
+              <option value="Found">Found</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label>Category</label>
+            <input type="text" id="itemCategory" required />
+          </div>
+          <div>
+            <label>Location</label>
+            <input type="text" id="itemLocation" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label>Date</label>
+            <input type="date" id="itemDate" required />
+          </div>
+          <div>
+            <label>Image URL</label>
+            <input type="text" id="itemImage" placeholder="Paste image URL if any" />
+          </div>
+        </div>
+
+        <div>
+          <label>Upload Image</label>
+          <input type="file" id="itemImageFile" accept="image/*" />
+        </div>
+
+        <div class="preview-box">
+          <img id="imagePreview" src="" alt="Item Preview" style="display: none;" />
+          <span id="previewText">Image preview will appear here</span>
+        </div>
+
+        <div>
+          <label>Description</label>
+          <textarea id="itemDescription" rows="5" required></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" id="submitBtn" class="primary-btn">Submit Item</button>
+          <button type="reset" id="resetBtn" class="outline-btn">Reset</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <section class="listing-panel" id="listings">
+    <div class="section-title-row">
+      <h2>Item Listings</h2>
+      <span class="muted-text">Search and Filter</span>
+    </div>
+
+    <div class="toolbar">
+      <input type="text" id="searchInput" placeholder="Search by item, category, or location..." />
+
+      <div class="filter-group">
+        <button class="filter-btn active" data-filter="All">All</button>
+        <button class="filter-btn" data-filter="Lost">Lost</button>
+        <button class="filter-btn" data-filter="Found">Found</button>
+        <button class="filter-btn" data-filter="Pending">Pending</button>
+        <button class="filter-btn" data-filter="Claimed">Claimed</button>
+        <button class="filter-btn" data-filter="Approved">Approved</button>
+        <button class="filter-btn" data-filter="Returned">Returned</button>
+        <button class="filter-btn" data-filter="Rejected">Rejected</button>
+      </div>
+    </div>
+
+    <div id="itemsContainer" class="cards-grid"></div>
+  </section>
+
+  <section class="admin-panel" id="admin">
+    <div class="section-title-row">
+      <h2>Admin Claim Review</h2>
+      <span class="muted-text">Verification Workflow</span>
+    </div>
+
+    <div id="adminClaimsContainer" class="admin-grid"></div>
+  </section>
+
+  <div id="claimModal" class="modal">
+    <div class="modal-box">
+      <button id="closeModal" class="modal-close">&times;</button>
+      <h2>Claim Item</h2>
+
+      <form id="claimForm" class="claim-form">
+        <input type="hidden" id="claimItemId" />
+
+        <label>Your Name</label>
+        <input type="text" id="claimName" required />
+
+        <label>Email Address</label>
+        <input type="email" id="claimEmail" required />
+
+        <label>Phone Number</label>
+        <input type="text" id="claimPhone" required />
+
+        <label>Proof of Ownership</label>
+        <textarea id="claimProof" rows="4" required></textarea>
+
+        <button type="submit" class="primary-btn full-btn">Submit Claim</button>
+      </form>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2026 Campus Lost & Found Portal | Final Webpage Project</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
