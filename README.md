@@ -96,3 +96,48 @@ A modern, feature-rich web application for managing lost and found items across 
    ```bash
    git clone https://github.com/Avi-reck/campus-lost-found.git
    cd campus-lost-found
+   
+2. Open the project folder.
+
+3. Run the project by opening `index.html` in your browser.
+
+## How to Upload to GitHub
+
+1. Create a new repository on GitHub.
+2. Upload all project files (`index.html`, `style.css`, `script.js`, and `README.md`).
+3. Commit the files to the `main` branch.
+
+## How to Deploy on GitHub Pages
+
+1. Open your repository on GitHub.
+2. Go to **Settings**.
+3. Click **Pages**.
+4. Under **Build and deployment**:
+   - Source: `Deploy from a branch`
+   - Branch: `main`
+   - Folder: `/root`
+5. Save the settings.
+6. After a few seconds, your site will be live at:
+
+
+## Use Case
+
+This project is useful for:
+
+- College mini projects
+- Web development practice
+- Campus utility systems
+- Hackathon project demonstrations
+- Final year or semester portfolio projects
+
+## Future Improvements
+
+- Database integration with MySQL or MongoDB
+- Email notifications
+- OTP verification
+- AI-based item matching
+- Real-time claim tracking
+
+## License
+
+This project is created for educational and academic use.
