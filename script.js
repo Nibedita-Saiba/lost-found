@@ -1,10 +1,22 @@
+/* ===== AUTHENTICATION LOGIC ===== */
+
+// Auth DOM Elements
+const authContainer = document.getElementById("authContainer");
+const portalContainer = document.getElementById("portalContainer");
+const loginForm = document.getElementById("loginForm");
+const registerForm = document.getElementById("registerForm");
+const loginError = document.getElementById("loginError");
+const registerError = document.getElementById("registerError");
+const logoutBtn = document.getElementById("logoutBtn");
+const userGreeting = document.getElementById("userGreeting");
+
+// Portal Elements
 const itemForm = document.getElementById("itemForm");
 const itemsContainer = document.getElementById("itemsContainer");
 const adminClaimsContainer = document.getElementById("adminClaimsContainer");
 const filterButtons = document.querySelectorAll(".filter-btn");
 const searchInput = document.getElementById("searchInput");
 const itemImageFile = document.getElementById("itemImageFile");
-const itemImage = document.getElementById("itemImage");
 const imagePreview = document.getElementById("imagePreview");
 const previewText = document.getElementById("previewText");
 const submitBtn = document.getElementById("submitBtn");
@@ -18,6 +30,188 @@ const claimForm = document.getElementById("claimForm");
 const notificationList = document.getElementById("notificationList");
 
 let currentFilter = "All";
+let currentUser = null;
+
+// ===== AUTHENTICATION FUNCTIONS =====
+
+function validateEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+function getUsers() {
+  return JSON.parse(localStorage.getItem("campusFinalUsers")) || [];
+}
+
+function saveUsers(users) {
+  localStorage.setItem("campusFinalUsers", JSON.stringify(users));
+}
+
+function getCurrentUser() {
+  return JSON.parse(localStorage.getItem("campusFinalCurrentUser")) || null;
+}
+
+function setCurrentUser(user) {
+  localStorage.setItem("campusFinalCurrentUser", JSON.stringify(user));
+}
+
+function clearCurrentUser() {
+  localStorage.removeItem("campusFinalCurrentUser");
+}
+
+function toggleAuthForm(e) {
+  e.preventDefault();
+  loginForm.classList.toggle("active");
+  registerForm.classList.toggle("active");
+  loginError.classList.remove("show");
+  loginError.textContent = "";
+  registerError.classList.remove("show");
+  registerError.textContent = "";
+}
+
+function showLoginError(message) {
+  loginError.textContent = message;
+  loginError.classList.add("show");
+  setTimeout(() => {
+    loginError.classList.remove("show");
+  }, 5000);
+}
+
+function showRegisterError(message) {
+  registerError.textContent = message;
+  registerError.classList.add("show");
+  setTimeout(() => {
+    registerError.classList.remove("show");
+  }, 5000);
+}
+
+function showPortal() {
+  authContainer.style.display = "none";
+  portalContainer.style.display = "block";
+  displayItems();
+  renderAdminClaims();
+  updateDashboard();
+}
+
+function hidePortal() {
+  authContainer.style.display = "flex";
+  portalContainer.style.display = "none";
+  loginForm.classList.add("active");
+  registerForm.classList.remove("active");
+  loginForm.reset();
+}
+
+function updateUserGreeting() {
+  if (currentUser) {
+    const firstName = currentUser.name.split(" ")[0];
+    userGreeting.textContent = `👋 Welcome, ${firstName}!`;
+  }
+}
+
+// Login Handler
+loginForm.addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value;
+
+  if (!email || !password) {
+    showLoginError("Please fill in all fields.");
+    return;
+  }
+
+  const users = getUsers();
+  const user = users.find(u => u.email === email);
+
+  if (!user) {
+    showLoginError("Email not found. Please register first.");
+    return;
+  }
+
+  if (user.password !== password) {
+    showLoginError("Incorrect password.");
+    return;
+  }
+
+  // Login successful
+  currentUser = user;
+  setCurrentUser(user);
+  updateUserGreeting();
+  showPortal();
+  loginForm.reset();
+});
+
+// Register Handler
+registerForm.addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const name = document.getElementById("registerName").value.trim();
+  const email = document.getElementById("registerEmail").value.trim();
+  const studentId = document.getElementById("registerStudentId").value.trim();
+  const password = document.getElementById("registerPassword").value;
+  const confirmPassword = document.getElementById("registerPasswordConfirm").value;
+
+  // Validation
+  if (!name || !email || !studentId || !password || !confirmPassword) {
+    showRegisterError("Please fill in all fields.");
+    return;
+  }
+
+  if (!validateEmail(email)) {
+    showRegisterError("Please enter a valid email address.");
+    return;
+  }
+
+  if (password.length < 6) {
+    showRegisterError("Password must be at least 6 characters long.");
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    showRegisterError("Passwords do not match.");
+    return;
+  }
+
+  const users = getUsers();
+  const emailExists = users.some(u => u.email === email);
+
+  if (emailExists) {
+    showRegisterError("Email already registered. Please sign in.");
+    return;
+  }
+
+  // Create new user
+  const newUser = {
+    id: Date.now(),
+    name,
+    email,
+    studentId,
+    password,
+    registeredAt: new Date().toISOString()
+  };
+
+  users.push(newUser);
+  saveUsers(users);
+
+  // Auto login
+  currentUser = newUser;
+  setCurrentUser(newUser);
+  updateUserGreeting();
+  showPortal();
+  registerForm.reset();
+});
+
+// Logout Handler
+logoutBtn.addEventListener("click", function () {
+  if (confirm("Are you sure you want to log out?")) {
+    clearCurrentUser();
+    currentUser = null;
+    hidePortal();
+    userGreeting.textContent = "";
+  }
+});
+
+// ===== PORTAL FUNCTIONS (EXISTING CODE) =====
 
 let items = JSON.parse(localStorage.getItem("campusFinalItems")) || [
   {
@@ -123,20 +317,9 @@ itemImageFile.addEventListener("change", function () {
     imagePreview.src = e.target.result;
     imagePreview.style.display = "block";
     previewText.style.display = "none";
-    itemImage.value = e.target.result;
+    document.getElementById("itemImage").value = e.target.result;
   };
   reader.readAsDataURL(file);
-});
-
-itemImage.addEventListener("input", function () {
-  const url = this.value.trim();
-  if (url) {
-    imagePreview.src = url;
-    imagePreview.style.display = "block";
-    previewText.style.display = "none";
-  } else {
-    resetPreview();
-  }
 });
 
 function createBadge(text, cls) {
@@ -186,7 +369,7 @@ function displayItems() {
         ${item.claimInfo ? `<p><strong>Claimed By:</strong> ${item.claimInfo.name}</p>` : ""}
 
         <div class="card-actions">
-          <button class="action-btn claim-btn" onclick="openClaimModal(${item.id})">Claim</button>
+          <button class="action-btn claim-btn" onclick="openClaimModal(${item.id})">Return</button>
           <button class="action-btn edit-btn" onclick="editItem(${item.id})">Edit</button>
           <button class="action-btn return-btn" onclick="markReturned(${item.id})">Returned</button>
           <button class="action-btn delete-btn" onclick="deleteItem(${item.id})">Delete</button>
@@ -429,7 +612,16 @@ exportBtn.addEventListener("click", () => {
   addNotification("Records exported successfully.");
 });
 
+// ===== INITIALIZATION =====
+
 loadTheme();
 renderNotifications();
-displayItems();
-renderAdminClaims();
+
+// Check if user is already logged in
+currentUser = getCurrentUser();
+if (currentUser) {
+  updateUserGreeting();
+  showPortal();
+} else {
+  hidePortal();
+}
