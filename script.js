@@ -116,7 +116,7 @@ loginForm.addEventListener("submit", function (e) {
   const password = document.getElementById("loginPassword").value;
 
   if (!email || !password) {
-    showLoginError("Please fill in all fields.");
+    showLoginError("❌ Please fill in all fields.");
     return;
   }
 
@@ -124,12 +124,12 @@ loginForm.addEventListener("submit", function (e) {
   const user = users.find(u => u.email === email);
 
   if (!user) {
-    showLoginError("Email not found. Please register first.");
+    showLoginError("❌ Email not found. Please register first.");
     return;
   }
 
   if (user.password !== password) {
-    showLoginError("Incorrect password.");
+    showLoginError("❌ Incorrect password. Please try again.");
     return;
   }
 
@@ -153,22 +153,22 @@ registerForm.addEventListener("submit", function (e) {
 
   // Validation
   if (!name || !email || !studentId || !password || !confirmPassword) {
-    showRegisterError("Please fill in all fields.");
+    showRegisterError("❌ Please fill in all fields.");
     return;
   }
 
   if (!validateEmail(email)) {
-    showRegisterError("Please enter a valid email address.");
+    showRegisterError("❌ Please enter a valid email address.");
     return;
   }
 
   if (password.length < 6) {
-    showRegisterError("Password must be at least 6 characters long.");
+    showRegisterError("❌ Password must be at least 6 characters long.");
     return;
   }
 
   if (password !== confirmPassword) {
-    showRegisterError("Passwords do not match.");
+    showRegisterError("❌ Passwords do not match.");
     return;
   }
 
@@ -176,7 +176,7 @@ registerForm.addEventListener("submit", function (e) {
   const emailExists = users.some(u => u.email === email);
 
   if (emailExists) {
-    showRegisterError("Email already registered. Please sign in.");
+    showRegisterError("❌ Email already registered. Please sign in.");
     return;
   }
 
@@ -203,7 +203,7 @@ registerForm.addEventListener("submit", function (e) {
 
 // Logout Handler
 logoutBtn.addEventListener("click", function () {
-  if (confirm("Are you sure you want to log out?")) {
+  if (confirm("🚪 Are you sure you want to log out?")) {
     clearCurrentUser();
     currentUser = null;
     hidePortal();
@@ -222,7 +222,7 @@ let items = JSON.parse(localStorage.getItem("campusFinalItems")) || [
     location: "Library Block",
     date: "2026-04-22",
     image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=800&q=80",
-    description: "Blue bottle found near the reading area.",
+    description: "Blue water bottle found near the reading area. Has a silver cap with sport design.",
     status: "Pending",
     claimInfo: null
   },
@@ -234,7 +234,7 @@ let items = JSON.parse(localStorage.getItem("campusFinalItems")) || [
     location: "Canteen",
     date: "2026-04-24",
     image: "https://images.unsplash.com/photo-1586769852044-692d6e3703f0?auto=format&fit=crop&w=800&q=80",
-    description: "Lost college ID card with red strap.",
+    description: "Lost college ID card with red strap. Name: [Student Name]. Please contact if found.",
     status: "Pending",
     claimInfo: null
   }
@@ -251,7 +251,7 @@ function saveNotifications() {
 }
 
 function addNotification(message) {
-  notifications.unshift(message);
+  notifications.unshift(`📌 ${message}`);
   if (notifications.length > 8) notifications.pop();
   saveNotifications();
   renderNotifications();
@@ -288,17 +288,17 @@ function loadTheme() {
   const savedTheme = localStorage.getItem("campusFinalTheme");
   if (savedTheme === "dark") {
     document.body.classList.add("dark");
-    themeToggle.textContent = "Light Mode";
+    themeToggle.textContent = "☀️";
   } else {
     document.body.classList.remove("dark");
-    themeToggle.textContent = "Dark Mode";
+    themeToggle.textContent = "🌙";
   }
 }
 
 themeToggle.addEventListener("click", () => {
   document.body.classList.toggle("dark");
   const dark = document.body.classList.contains("dark");
-  themeToggle.textContent = dark ? "Light Mode" : "Dark Mode";
+  themeToggle.textContent = dark ? "☀️" : "🌙";
   saveTheme(dark ? "dark" : "light");
 });
 
@@ -345,7 +345,7 @@ function displayItems() {
   });
 
   if (filteredItems.length === 0) {
-    itemsContainer.innerHTML = `<div class="empty-box">No matching items found.</div>`;
+    itemsContainer.innerHTML = `<div class="empty-box">📭 No matching items found. Try adjusting your search!</div>`;
     updateDashboard();
     return;
   }
@@ -362,17 +362,17 @@ function displayItems() {
           ${createBadge(item.status, item.status)}
         </div>
         <h3>${item.name}</h3>
-        <p><strong>Category:</strong> ${item.category}</p>
-        <p><strong>Location:</strong> ${item.location}</p>
-        <p><strong>Date:</strong> ${item.date}</p>
-        <p><strong>Description:</strong> ${item.description}</p>
-        ${item.claimInfo ? `<p><strong>Claimed By:</strong> ${item.claimInfo.name}</p>` : ""}
+        <p><strong>📂 Category:</strong> ${item.category}</p>
+        <p><strong>📍 Location:</strong> ${item.location}</p>
+        <p><strong>📅 Date:</strong> ${item.date}</p>
+        <p><strong>📝 Description:</strong> ${item.description}</p>
+        ${item.claimInfo ? `<p><strong>👤 Claimed By:</strong> ${item.claimInfo.name}</p>` : ""}
 
         <div class="card-actions">
-          <button class="action-btn claim-btn" onclick="openClaimModal(${item.id})">Return</button>
-          <button class="action-btn edit-btn" onclick="editItem(${item.id})">Edit</button>
-          <button class="action-btn return-btn" onclick="markReturned(${item.id})">Returned</button>
-          <button class="action-btn delete-btn" onclick="deleteItem(${item.id})">Delete</button>
+          <button class="action-btn claim-btn" onclick="openClaimModal(${item.id})">🙋 Claim</button>
+          <button class="action-btn edit-btn" onclick="editItem(${item.id})">✏️ Edit</button>
+          <button class="action-btn return-btn" onclick="markReturned(${item.id})">🎉 Returned</button>
+          <button class="action-btn delete-btn" onclick="deleteItem(${item.id})">🗑️ Delete</button>
         </div>
       </div>
     `;
@@ -389,7 +389,7 @@ function renderAdminClaims() {
   const claimItems = items.filter(item => item.claimInfo);
 
   if (claimItems.length === 0) {
-    adminClaimsContainer.innerHTML = `<div class="empty-box">No claim requests available.</div>`;
+    adminClaimsContainer.innerHTML = `<div class="empty-box">📭 No claim requests available.</div>`;
     return;
   }
 
@@ -404,15 +404,15 @@ function renderAdminClaims() {
           ${createBadge(item.status, item.status)}
         </div>
         <h3>${item.name}</h3>
-        <p><strong>Claimant:</strong> ${item.claimInfo.name}</p>
-        <p><strong>Email:</strong> ${item.claimInfo.email}</p>
-        <p><strong>Phone:</strong> ${item.claimInfo.phone}</p>
-        <p><strong>Proof:</strong> ${item.claimInfo.proof}</p>
+        <p><strong>👤 Claimant:</strong> ${item.claimInfo.name}</p>
+        <p><strong>📧 Email:</strong> ${item.claimInfo.email}</p>
+        <p><strong>📞 Phone:</strong> ${item.claimInfo.phone}</p>
+        <p><strong>🔍 Proof:</strong> ${item.claimInfo.proof}</p>
 
         <div class="admin-actions">
-          <button class="approve-btn" onclick="approveClaim(${item.id})">Approve</button>
-          <button class="reject-btn" onclick="rejectClaim(${item.id})">Reject</button>
-          <button class="status-btn" onclick="markReturned(${item.id})">Mark Returned</button>
+          <button class="approve-btn" onclick="approveClaim(${item.id})">✅ Approve</button>
+          <button class="reject-btn" onclick="rejectClaim(${item.id})">❌ Reject</button>
+          <button class="status-btn" onclick="markReturned(${item.id})">🎉 Mark Returned</button>
         </div>
       </div>
     `;
@@ -424,16 +424,19 @@ function renderAdminClaims() {
 function openClaimModal(id) {
   document.getElementById("claimItemId").value = id;
   claimModal.style.display = "flex";
+  claimModal.classList.add("active");
 }
 
 closeModal.addEventListener("click", () => {
   claimModal.style.display = "none";
+  claimModal.classList.remove("active");
   claimForm.reset();
 });
 
 window.addEventListener("click", e => {
   if (e.target === claimModal) {
     claimModal.style.display = "none";
+    claimModal.classList.remove("active");
     claimForm.reset();
   }
 });
@@ -466,6 +469,7 @@ claimForm.addEventListener("submit", function (e) {
   displayItems();
   renderAdminClaims();
   claimModal.style.display = "none";
+  claimModal.classList.remove("active");
   claimForm.reset();
 });
 
@@ -512,7 +516,7 @@ function markReturned(id) {
 }
 
 function deleteItem(id) {
-  if (!confirm("Delete this item record?")) return;
+  if (!confirm("🗑️ Delete this item record?")) return;
 
   items = items.filter(item => item.id !== id);
   saveItems();
@@ -541,7 +545,7 @@ function editItem(id) {
     previewText.style.display = "none";
   }
 
-  submitBtn.textContent = "Update Item";
+  submitBtn.textContent = "✏️ Update Item";
   window.scrollTo({ top: document.getElementById("report").offsetTop - 20, behavior: "smooth" });
 }
 
@@ -568,7 +572,7 @@ itemForm.addEventListener("submit", function (e) {
   if (editItemId) {
     items = items.map(item => item.id === Number(editItemId) ? itemData : item);
     addNotification("An item record was updated.");
-    submitBtn.textContent = "Submit Item";
+    submitBtn.textContent = "✅ Submit Item";
   } else {
     items.unshift(itemData);
     addNotification("A new item report was created.");
@@ -584,7 +588,7 @@ itemForm.addEventListener("submit", function (e) {
 });
 
 resetBtn.addEventListener("click", () => {
-  submitBtn.textContent = "Submit Item";
+  submitBtn.textContent = "✅ Submit Item";
   document.getElementById("editItemId").value = "";
   document.getElementById("existingStatus").value = "";
   resetPreview();
